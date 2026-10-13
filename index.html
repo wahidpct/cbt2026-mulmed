@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Online - Acak Soal & Jawaban</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f4f7fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            padding: 30px 35px;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0, 20, 40, 0.12);
+            transition: 0.25s;
+        }
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #0b2b4a;
+            border-left: 6px solid #2a7de1;
+            padding-left: 18px;
+            margin-bottom: 28px;
+            letter-spacing: -0.3px;
+        }
+        .identitas {
+            background: #f0f5fe;
+            padding: 18px 22px;
+            border-radius: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px 35px;
+            margin-bottom: 30px;
+            align-items: center;
+            border: 1px solid #d9e6f5;
+        }
+        .identitas label {
+            font-weight: 500;
+            color: #1a3b5e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .identitas input, .identitas select {
+            padding: 10px 14px;
+            border: 1px solid #cbdae9;
+            border-radius: 40px;
+            font-size: 15px;
+            background: white;
+            min-width: 180px;
+            transition: 0.2s;
+        }
+        .identitas input:focus, .identitas select:focus {
+            border-color: #2a7de1;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.15);
+        }
+        .timer-area {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .timer-box {
+            background: #1f2e46;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 80px;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .timer-box span {
+            background: #f6c343;
+            color: #1f2e46;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 20px;
+        }
+        .btn-acak {
+            background: #eef3fa;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1d3f62;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.15s;
+            border: 1px solid #c4d4e8;
+        }
+        .btn-acak:hover {
+            background: #dce6f2;
+            transform: scale(0.97);
+        }
+        .soal-item {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 22px 25px 25px 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e4ebf5;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+            transition: 0.2s;
+        }
+        .soal-item:hover {
+            border-color: #b6cee9;
+        }
+        .soal-header {
+            display: flex;
+            gap: 12px;
+            font-weight: 600;
+            color: #113355;
+            margin-bottom: 16px;
+            font-size: 17px;
+        }
+        .soal-header .nomor {
+            background: #dde8fa;
+            padding: 3px 14px;
+            border-radius: 40px;
+            font-size: 15px;
+            color: #0a2844;
+        }
+        .soal-header .tipe {
+            background: #e2ecfe;
+            padding: 3px 14px;
+            border-radius: 40px;
+            font-size: 14px;
+        }
+        .soal-text {
+            font-size: 18px;
+            font-weight: 500;
+            color: #0a1e32;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+        .opsi-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .opsi-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 16px 8px 12px;
+            border-radius: 60px;
+            background: #f8faff;
+            border: 1px solid #dfeaf5;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+        .opsi-item:hover {
+            background: #ecf4ff;
+            border-color: #a6c1e4;
+        }
+        .opsi-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1f6ed4;
+            flex-shrink: 0;
+        }
+        .opsi-item label {
+            font-size: 16px;
+            color: #1a3552;
+            flex: 1;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+        .jawaban-singkat {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .jawaban-singkat input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 18px;
+            border: 1px solid #ccdcee;
+            border-radius: 60px;
+            font-size: 15px;
+            background: #fafdff;
+            transition: 0.2s;
+        }
+        .jawaban-singkat input:focus {
+            border-color: #2a7de1;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.12);
+        }
+        .tombol-submit {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-top: 1px solid #d9e3ef;
+            padding-top: 30px;
+        }
+        .konfirmasi-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            color: #1b3c5e;
+        }
+        .konfirmasi-area input {
+            width: 20px;
+            height: 20px;
+            accent-color: #1f6ed4;
+        }
+        .btn-submit {
+            background: #1f6ed4;
+            color: white;
+            border: none;
+            padding: 14px 44px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 6px 12px rgba(26, 80, 170, 0.25);
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: #1359b8;
+            transform: scale(0.97);
+        }
+        .btn-submit:disabled {
+            background: #a7bddb;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.6;
+        }
+        .alert-box {
+            margin-top: 20px;
+            background: #e6f0fa;
+            padding: 14px 22px;
+            border-radius: 40px;
+            color: #143c66;
+            border-left: 5px solid #2a7de1;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 25px;
+            text-align: center;
+            color: #7a8fa8;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 20px 16px; }
+            .identitas { flex-direction: column; align-items: stretch; }
+            .timer-area { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <h1>📝 Ujian Online</h1>
+
+    <!-- Identitas Siswa -->
+    <div class="identitas">
+        <label>Nama Siswa <input type="text" id="namaSiswa" placeholder="Nama lengkap" /></label>
+        <label>Kelas 
+            <select id="kelasSiswa">
+                <option value="X APHPI">X APHPI</option>
+                <option value="X KULINER 1">X KULINER 1</option>
+                <option value="X KULINER 2">X KULINER 2</option>
+                <option value="X TAV 1">X TAV 1</option>
+                <option value="X TAV 2">X TAV 2</option>
+                <option value="X TKR 2">X TKR 2</option>
+                <option value="X TKR 1">X TKR 1</option>
+                <option value="X TKR 3">X TKR 3</option>
+                <option value="X TSM 1">X TSM 1</option>
+                <option value="X TSM 2">X TSM 2</option>
+                <option value="X DPB">X DPB</option>
+            </select>
+        </label>
+    </div>
+
+    <!-- Timer + acak manual -->
+    <div class="timer-area">
+        <div class="timer-box">⏳ <span id="timerDisplay">90:00</span></div>
+        <button class="btn-acak" id="acakUlangBtn">🔄 Acak ulang soal</button>
+    </div>
+
+    <!-- Tempat daftar soal -->
+    <div id="soalContainer"></div>
+
+    <!-- Submit & konfirmasi -->
+    <div class="tombol-submit">
+        <div class="konfirmasi-area">
+            <input type="checkbox" id="centangSelesai" />
+            <label for="centangSelesai">Saya sudah selesai mengerjakan</label>
+        </div>
+        <button class="btn-submit" id="submitBtn" disabled>✔️ Kumpulkan Jawaban</button>
+    </div>
+    <div id="infoAlert" class="alert-box" style="display: none;"></div>
+    <footer>© 2026 · Soal acak otomatis saat load</footer>
+</div>
+
+<script>
+    (function() {
+        // ---------- DATA SOAL (50 soal campuran) ----------
+        const bankSoal = [
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Rina adalah seorang videografer yang ditugaskan untuk membuat video profil perusahaan. Ia ingin menampilkan kesan bahwa perusahaan tersebut besar, megah, dan berwibawa. Ia memutuskan untuk mengambil gambar dari posisi bawah menghadap ke atas terhadap gedung perusahaan. Teknik pengambilan gambar yang digunakan Rina disebut...',
+                opsi: ['High angle','Low angle','Birds eye view','Eye level','Dutch angle'],
+                jawabanBenar: 'Low angle'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Budi sedang merekam sebuah adegan percakapan antara dua tokoh. Ia ingin penonton merasakan emosi kedua tokoh secara bergantian tanpa memperlihatkan wajah keduanya sekaligus. Ia pun merekam wajah tokoh A dari satu sisi, lalu wajah tokoh B dari sisi berlawanan. Teknik pengambilan gambar yang digunakan Budi adalah...',
+                opsi: ['Establishing shot','Over the shoulder shot','Shot reverse shot','Tracking shot','Zoom out'],
+                jawabanBenar: 'Shot reverse shot'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sinta membuat video iklan produk skincare. Ia ingin menampilkan tekstur krim secara detail dan sangat dekat sehingga penonton bisa melihat butiran halus pada produk tersebut. Ia menggunakan lensa makro dan mendekatkan kamera ke produk. Jenis shot yang digunakan Sinta adalah...',
+                opsi: ['Extreme close up','Medium shot','Long shot','Full shot','Wide shot'],
+                jawabanBenar: 'Extreme close up'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Andi adalah editor video yang bekerja pada sebuah perusahaan advertising. Klien memintanya membuat video iklan berdurasi 30 detik dengan transisi yang halus antar scene. Andi menggunakan software Adobe Premiere Pro untuk menyusun klip, menambahkan transisi, dan menyesuaikan warna. Aplikasi yang digunakan Andi termasuk kategori...',
+                opsi: ['Aplikasi pengolah kata','Aplikasi multimedia editing','Aplikasi spreadsheet','Aplikasi presentasi','Aplikasi database'],
+                jawabanBenar: 'Aplikasi multimedia editing'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah file teks berisi karakter A. Dalam kode ASCII, A bernilai 65. Nilai biner dari 65 adalah...',
+                opsi: ['Pan','Tilt','Tracking','Zoom','Crane'],
+                jawabanBenar: 'Tracking'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah perusahaan minuman ingin membuat iklan yang menampilkan kesegaran produknya. Mereka memutuskan untuk menayangkan iklan di platform YouTube dengan durasi 15 detik sebelum video utama diputar, dan penonton bisa melewatinya setelah 5 detik. Jenis iklan digital yang dimaksud adalah...',
+                opsi: ['Banner ads','Pop-up ads','Skippable video ads','Non-skippable video ads','Native ads'],
+                jawabanBenar: 'Skippable video ads'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Fajar adalah seorang video editor yang ditugaskan untuk membuat video company profile. Ia ingin menambahkan efek teks bergerak, animasi logo, dan grafis pendukung. Ia memutuskan menggunakan software yang memiliki fitur motion graphics yang lengkap. Software yang paling tepat digunakan Fajar adalah...',
+                opsi: ['Microsoft Word','Adobe After Effects','Microsoft Excel','Notepad','Winamp'],
+                jawabanBenar: 'Adobe After Effects'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Ketika merekam sebuah adegan di pantai, Tono ingin menunjukkan betapa luasnya pantai dan kecilnya manusia di hadapannya. Ia mengambil gambar dari helikopter dengan kamera menghadap ke bawah. Teknik pengambilan gambar yang digunakan Tono adalah...',
+                opsi: ['Eye level','Low angle','High angle','Birds eye view','Dutch angle'],
+                jawabanBenar: 'Birds eye view'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Lina membuat video tutorial makeup. Ia ingin penonton melihat wajahnya secara langsung sejajar dengan mata kamera sehingga terkesan natural dan personal. Angle yang digunakan Lina adalah...',
+                opsi: ['High angle','Low angle','Eye level','Birds eye view','Worms eye view'],
+                jawabanBenar: ''
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah agensi kreatif diminta membuat iklan cetak untuk majalah. Iklan tersebut menampilkan produk parfum dengan model yang sedang tersenyum dan tagline yang menarik. Iklan ini akan ditempatkan di halaman tengah majalah. Media iklan yang digunakan adalah...',
+                opsi: ['Iklan radio','Iklan televisi','Iklan cetak','Iklan digital','Iklan outdoor'],
+                jawabanBenar: 'Iklan cetak'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Rudi merekam sebuah adegan di mana kamera berputar secara horizontal dari kiri ke kanan untuk menunjukkan pemandangan sebuah kota dari atas gedung. Teknik pergerakan kamera yang digunakan Rudi adalah...',
+                opsi: ['Tilt','Pan','Zoom in','Dolly','Pedestal'],
+                jawabanBenar: 'Pan'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Dalam sebuah video iklan, tiba-tiba gambar miring ke kanan sehingga menciptakan kesan tidak nyaman dan tegang. Teknik ini sering digunakan untuk menunjukkan ketidakstabilan emosi tokoh. Teknik angle yang digunakan adalah...',
+                opsi: ['Eye level','Low angle','High angle','Dutch angle','Birds eye view'],
+                jawabanBenar: 'Dutch angle'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sari adalah seorang editor video yang ingin memotong bagian awal dan akhir klip video agar hanya bagian tengah yang menarik yang ditampilkan. Ia menggunakan fitur trim pada software editornya. Proses yang dilakukan Sari disebut...',
+                opsi: ['Rendering','Trimming','Encoding','Compositing','Color grading'],
+                jawabanBenar: 'Trimming'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah merek sepatu ingin membuat iklan yang ditayangkan di bioskop sebelum film dimulai. Iklan tersebut berdurasi 30 detik dan menampilkan model yang sedang berlari di jalanan kota. Media iklan yang digunakan adalah...',
+                opsi: ['Iklan radio','Iklan bioskop','Iklan koran','Iklan majalah','Iklan billboard'],
+                jawabanBenar: 'Iklan bioskop'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Doni mengambil gambar sekelompok orang sedang duduk di taman. Ia ingin menampilkan seluruh tubuh mereka beserta lingkungan sekitarnya. Ia mengambil gambar dari jarak cukup jauh. Jenis shot yang digunakan Doni adalah...',
+                opsi: ['Close up','Medium shot','Full shot','Extreme close up','Big close up'],
+                jawabanBenar: 'Full shot'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Dalam proses editing, Rina ingin menggabungkan dua klip video dengan efek transisi di mana gambar pertama memudar perlahan lalu gambar kedua muncul perlahan. Transisi yang digunakan Rina adalah...',
+                opsi: ['Cut','Fade in/fade out','Wipe','Slide','Spin'],
+                jawabanBenar: 'Fade in/fade out'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah perusahaan ingin membuat iklan yang dapat dilihat oleh pengendara di jalan raya. Mereka memasang papan reklame besar di pinggir jalan tol dengan gambar produk dan tagline singkat. Media iklan yang digunakan adalah...',
+                opsi: ['Iklan radio','Iklan televisi','Billboard','Iklan koran','Iklan majalah'],
+                jawabanBenar: 'Billboard'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Bayu sedang mengedit video dengan menambahkan musik latar, efek suara, dan narasi. Ia juga menyesuaikan volume setiap audio agar seimbang. Proses yang dilakukan Bayu dalam editing audio disebut...',
+                opsi: ['Color grading','Audio mixing','Rendering','Compositing','Trimming'],
+                jawabanBenar: 'Audio mixing'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Ketika merekam adegan sedih, sutradara meminta kamera mengambil gambar dari atas menghadap ke bawah ke arah tokoh yang sedang menangis. Hal ini untuk menampilkan kesan lemah dan tertekan. Angle yang digunakan adalah...',
+                opsi: ['Low angle','High angle','Eye level','Dutch angle','Birds eye view'],
+                jawabanBenar: 'High angle'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah aplikasi multimedia digunakan untuk membuat presentasi interaktif yang menggabungkan teks, gambar, audio, dan video. Aplikasi ini sering digunakan dalam pembelajaran. Contoh aplikasi multimedia interaktif adalah...',
+                opsi: ['Microsoft PowerPoint','Adobe Photoshop','Adobe Premiere Pro','CorelDRAW','AutoCAD'],
+                jawabanBenar: 'Microsoft PowerPoint'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Seorang videografer ingin mengambil gambar detail mata seseorang untuk menampilkan emosi yang kuat. Ia menggunakan lensa makro dan mendekatkan kamera sangat dekat ke mata. Jenis shot yang digunakan adalah...',
+                opsi: ['Medium shot','Long shot','Extreme close up','Full shot','Wide shot'],
+                jawabanBenar: 'Extreme close up'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Dalam sebuah video iklan, kamera bergerak naik dari bawah ke atas untuk memperlihatkan gedung pencakar langit secara keseluruhan. Teknik pergerakan kamera yang digunakan adalah...',
+                opsi: ['Pan','Tilt','Zoom','Dolly','Truck'],
+                jawabanBenar: 'Tilt'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Rina adalah editor video yang ingin mengubah warna video agar terlihat lebih hangat dan sinematik. Ia menyesuaikan hue, saturation, dan luminance pada software editornya. Proses yang dilakukan Rina disebut...',
+                opsi: ['Trimming','Color grading','Rendering','Encoding','Compositing'],
+                jawabanBenar: 'Color grading'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah produk kosmetik ingin diiklankan melalui media sosial dengan format video pendek yang dapat dilihat berulang kali oleh pengguna. Iklan ini muncul di antara konten pengguna lain. Media iklan yang digunakan adalah...',
+                opsi: ['Iklan televisi','Iklan radio','Iklan media sosial','Iklan koran','Iklan majalah'],
+                jawabanBenar: 'Iklan media sosial'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Andi merekam sebuah adegan di mana kamera bergerak mendekati objek secara perlahan tanpa mengubah posisi kamera, hanya mengubah focal length lensa. Teknik pergerakan kamera yang digunakan adalah...',
+                opsi: ['Pan','Tilt','Zoom in','Tracking','Crane'],
+                jawabanBenar: 'Zoom in'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Dalam sebuah film, terdapat adegan di mana kamera mengambil gambar dari belakang bahu tokoh A untuk memperlihatkan tokoh B yang sedang berbicara. Teknik ini sering digunakan dalam dialog. Teknik pengambilan gambar yang digunakan adalah...',
+                opsi: ['Establishing shot','Over the shoulder shot','Point of view shot','Reaction shot','Insert shot'],
+                jawabanBenar: 'Over the shoulder shot'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah perusahaan ingin membuat iklan yang ditayangkan di radio. Iklan tersebut hanya mengandalkan suara narator, musik, dan efek suara tanpa visual. Media iklan yang digunakan adalah...',
+                opsi: ['Iklan televisi','Iklan radio','Iklan digital','Iklan cetak','Iklan outdoor'],
+                jawabanBenar: 'Iklan radio'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Doni adalah seorang video editor yang bekerja pada proyek film pendek. Ia ingin menambahkan efek visual berupa ledakan dan api pada adegan aksi. Ia menggunakan software compositing. Software yang paling tepat digunakan Doni adalah...',
+                opsi: ['Adobe Photoshop','Adobe After Effects','Microsoft Word','Adobe Audition','Notepad'],
+                jawabanBenar: 'Adobe After Effects'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Sinta mengambil gambar sebuah produk makanan dari sudut atas sehingga terlihat seluruh tata letak makanan di atas meja. Angle ini sering digunakan untuk foto makanan. Angle yang digunakan Sinta adalah...',
+                opsi: ['Eye level','Low angle','High angle','Dutch angle','Worms eye view'],
+                jawabanBenar: 'High angle'
+            },
+            {
+                tipe: 'pilihan',
+                pertanyaan: 'Dalam sebuah video, kamera bergerak ke samping kanan atau kiri sejajar dengan subjek tanpa mengubah sudut hadap kamera. Teknik pergerakan kamera yang digunakan adalah...',
+                opsi: ['Pan','Tilt','Truck','Zoom','Pedestal'],
+                jawabanBenar: 'Truck'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah merek pakaian ingin membuat iklan yang menampilkan produknya secara langsung kepada konsumen di pusat perbelanjaan. Mereka menggunakan layar LED besar yang menampilkan video iklan. Media iklan yang digunakan adalah...',
+                opsi: ['Iklan radio','Iklan televisi','Iklan digital outdoor','Iklan koran','Iklan majalah'],
+                jawabanBenar: 'Iklan digital outdoor'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Rudi adalah seorang editor video yang ingin menyatukan beberapa klip video menjadi satu kesatuan yang utuh. Ia menyusun klip-klip tersebut secara berurutan di timeline. Proses yang dilakukan Rudi disebut...',
+                opsi: ['Rendering','Assembling','Encoding','Capturing','Authoring'],
+                jawabanBenar: 'Assembling'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Dalam sebuah adegan film, kamera mengambil gambar dari sudut sangat rendah hingga hampir menyentuh tanah, membuat objek terlihat sangat besar dan dominan. Angle yang digunakan adalah...',
+                opsi: ['High angle','Low angle','Eye level','Birds eye view','Dutch angle'],
+                jawabanBenar: 'Low angle'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah aplikasi multimedia digunakan untuk mengedit foto dengan menambahkan efek, filter, dan teks. Aplikasi ini banyak digunakan oleh desainer grafis. Contoh aplikasi tersebut adalah...',
+                opsi: ['Adobe Photoshop','Adobe Premiere Pro','Adobe Audition','Microsoft Excel','Winamp'],
+                jawabanBenar: 'Adobe Photoshop'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Dalam sebuah video iklan, terdapat adegan di mana kamera mengambil gambar dari sudut pandang tokoh yang sedang melihat sesuatu. Penonton seolah-olah melihat melalui mata tokoh tersebut. Teknik pengambilan gambar yang digunakan adalah...',
+                opsi: ['Over the shoulder shot','Point of view shot','Establishing shot','Reaction shot','Insert shot'],
+                jawabanBenar: 'Point of view shot'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah perusahaan ingin membuat iklan yang dapat diukur efektivitasnya secara real-time, dapat ditargetkan berdasarkan demografi, dan dapat diakses melalui internet. Media iklan yang digunakan adalah...',
+                opsi: ['Iklan cetak','Iklan radio','Iklan digital','Iklan televisi','Iklan outdoor'],
+                jawabanBenar: 'Iklan digital'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Andi adalah seorang video editor yang ingin mengekspor video hasil editannya ke format MP4 dengan resolusi 1080p. Proses ini memakan waktu karena komputer harus mengolah seluruh data video. Proses yang dilakukan Andi disebut...',
+                opsi: ['Capturing','Rendering','Trimming','Compositing','Mixing'],
+                jawabanBenar: 'Rendering'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Dalam sebuah adegan, kamera mengambil gambar seluruh ruangan untuk memperlihatkan lokasi dan suasana tempat kejadian sebelum adegan berikutnya dimulai. Jenis shot yang digunakan adalah...',
+                opsi: ['Close up','Medium shot','Establishing shot','Extreme close up','Insert shot'],
+                jawabanBenar: 'Establishing shot'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Sari adalah seorang editor video yang ingin menambahkan subtitle pada videonya. Ia menggunakan fitur text pada software editornya dan menyesuaikan timing kemunculan teks dengan audio narasi. Proses yang dilakukan Sari disebut...',
+                opsi: ['Color grading','Subtitling','Rendering','Compositing','Encoding'],
+                jawabanBenar: 'Subtitling'
+            },
+			{
+                tipe: 'pilihan',
+                pertanyaan: 'Sebuah perusahaan ingin membuat iklan yang ditayangkan di televisi nasional pada jam prime time. Iklan tersebut berdurasi 30 detik dan menampilkan produk dengan konsep cerita yang menarik. Media iklan yang digunakan adalah...',
+                opsi: ['Iklan radio','Iklan televisi','Iklan digital','Iklan cetak','Iklan outdoor'],
+                jawabanBenar: 'Iklan televisi'
+            },
+			{
+                tipe: 'singkat',
+                pertanyaan: 'Rudi adalah seorang video editor yang ingin mengekspor video hasil editannya ke format MP4 dengan resolusi 1080p. Proses ini memakan waktu karena komputer harus mengolah seluruh data video. Sebutkan proses yang dilakukan Rudi!',
+                jawabanBenar: 'Rendering'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Sebuah perusahaan ingin membuat iklan yang dapat diukur efektivitasnya secara real-time, dapat ditargetkan berdasarkan demografi, dan diakses melalui internet. Sebutkan jenis media iklan yang digunakan!',
+                jawabanBenar: 'Iklan digital'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Dalam sebuah adegan film, kamera berputar secara horizontal dari kiri ke kanan untuk menunjukkan pemandangan sebuah kota dari atas gedung. Sebutkan teknik pergerakan kamera yang digunakan!',
+                jawabanBenar: 'Panning'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Sebuah aplikasi multimedia digunakan untuk membuat animasi logo, teks bergerak, dan efek visual pada video. Sebutkan contoh aplikasi yang paling tepat untuk keperluan tersebut!',
+                jawabanBenar: 'Adobe After Effects'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Dewi mengambil video dengan kamera yang bergerak mengikuti tokoh utama yang sedang berjalan menyusuri koridor dari belakang. Sebutkan teknik pergerakan kamera yang digunakan Dewi!',
+                jawabanBenar: 'Tracking Shot'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Andi adalah seorang editor video yang ingin mengubah warna video agar terlihat lebih hangat dan sinematik dengan menyesuaikan hue, saturation, dan luminance. Sebutkan proses yang dilakukan Andi!',
+                jawabanBenar: 'Color grading'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Sebuah perusahaan memasang papan reklame besar di pinggir jalan tol yang dapat dilihat oleh pengendara yang melintas. Sebutkan media iklan yang digunakan perusahaan tersebut!',
+                jawabanBenar: 'Billboard'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Sinta merekam sebuah produk kosmetik dengan sangat dekat hingga hanya terlihat bagian mata dan bibir model. Ia ingin menampilkan detail tekstur produk. Sebutkan jenis shot yang digunakan Sinta!',
+                jawabanBenar: 'Extreme close up'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Budi sedang mengedit video dan ingin menggabungkan dua klip dengan efek di mana gambar pertama memudar perlahan lalu gambar kedua muncul perlahan. Sebutkan jenis transisi yang digunakan Budi!',
+                jawabanBenar: 'Fade in/fade out'
+            },
+             {
+                tipe: 'singkat',
+                pertanyaan: 'Rina adalah seorang videografer yang ingin menampilkan kesan bahwa seorang tokoh memiliki kekuatan dan dominasi. Ia mengambil gambar dari posisi bawah menghadap ke atas. Sebutkan teknik angle yang digunakan Rina!',
+                jawabanBenar: 'Low angle'
+            },          
+        ];
+
+        // ---------- STATE ----------
+        let daftarSoal = [];          // soal yang sedang ditampilkan (sudah diacak)
+        let timerInterval = null;
+        let waktuDetik = 5400;        // 10 menit = 600 detik
+        let isTimerRunning = false;
+        let isSubmitted = false;
+
+        // Elemen DOM
+        const container = document.getElementById('soalContainer');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const submitBtn = document.getElementById('submitBtn');
+        const centangSelesai = document.getElementById('centangSelesai');
+        const infoAlert = document.getElementById('infoAlert');
+        const acakUlangBtn = document.getElementById('acakUlangBtn');
+        const namaInput = document.getElementById('namaSiswa');
+        const kelasSelect = document.getElementById('kelasSiswa');
+
+        // ---------- FUNGSI ACUAN ----------
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Acak urutan soal, dan untuk pilihan ganda acak opsi + sesuaikan jawabanBenar
+        function generateRandomSoal() {
+            // 1. ambil salinan bankSoal
+            const shuffledSoal = shuffleArray([...bankSoal]);
+
+            // 2. untuk setiap soal tipe pilihan, acak opsi dan perbarui jawabanBenar
+            const processed = shuffledSoal.map(soal => {
+                if (soal.tipe === 'pilihan') {
+                    const opsiAsli = [...soal.opsi];
+                    const jawabanBenarAsli = soal.jawabanBenar;
+                    // acak opsi
+                    const shuffledOpsi = shuffleArray([...opsiAsli]);
+                    // jawabanBenar baru = nilai yang sama (tetapi tetap string)
+                    // karena jawabanBenar adalah teks, dan opsi sudah diacak, 
+                    // kita cari indeks jawaban benar di opsi asli, lalu ambil dari shuffledOpsi di posisi yang sama? 
+                    // Cara lebih aman: jawabanBenar adalah string, tetap sama nilainya.
+                    // Tapi karena opsi diacak, jawabanBenar tetap berupa string yang sama (misal "Jakarta")
+                    // tidak masalah, karena saat render kita akan tandai radio yang value-nya sama dengan jawabanBenar.
+                    return {
+                        ...soal,
+                        opsi: shuffledOpsi,
+                        jawabanBenar: jawabanBenarAsli   // tetap sama
+                    };
+                } else {
+                    return { ...soal };
+                }
+            });
+            return processed;
+        }
+
+        // Render soal ke container
+        function renderSoal(soalArray) {
+            if (!soalArray || soalArray.length === 0) {
+                container.innerHTML = '<p style="padding:20px;">Tidak ada soal.</p>';
+                return;
+            }
+
+            let html = '';
+            soalArray.forEach((soal, index) => {
+                const nomor = index + 1;
+                const tipeLabel = soal.tipe === 'pilihan' ? 'Pilihan Ganda' : 'Jawaban Singkat';
+
+                html += `<div class="soal-item" data-index="${index}">`;
+                html += `<div class="soal-header"><span class="nomor">Soal ${nomor}</span><span class="tipe">${tipeLabel}</span></div>`;
+                html += `<div class="soal-text">${soal.pertanyaan}</div>`;
+
+                if (soal.tipe === 'pilihan') {
+                    html += `<div class="opsi-container">`;
+                    // opsi sudah diacak dari generateRandomSoal
+                    soal.opsi.forEach((opsiText, idx) => {
+                        const radioId = `q${index}_${idx}`;
+                        html += `
+                            <div class="opsi-item">
+                                <input type="radio" name="soal_${index}" value="${opsiText}" id="${radioId}" />
+                                <label for="${radioId}">${opsiText}</label>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else {
+                    // jawaban singkat
+                    html += `
+                        <div class="jawaban-singkat">
+                            <input type="text" placeholder="Tulis jawaban ..." data-soalindex="${index}" class="input-singkat" />
+                        </div>
+                    `;
+                }
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+
+            // event listener untuk radio & input singkat tidak diperlukan khusus, nanti diambil saat submit
+        }
+
+        // Fungsi untuk memuat ulang (acak + render)
+        function loadAcakDanRender() {
+            if (isSubmitted) {
+                alert('Ujian sudah dikumpulkan. Refresh halaman untuk memulai ulang.');
+                return;
+            }
+            // acak soal
+            daftarSoal = generateRandomSoal();
+            renderSoal(daftarSoal);
+            // reset centang
+            centangSelesai.checked = false;
+            submitBtn.disabled = true;
+            // reset alert
+            infoAlert.style.display = 'none';
+            infoAlert.textContent = '';
+            // reset timer jika belum berjalan (atau jalankan)
+            if (!isTimerRunning) {
+                startTimer();
+            }
+        }
+
+        // ---------- TIMER ----------
+        function startTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            isTimerRunning = true;
+            timerInterval = setInterval(() => {
+                if (waktuDetik <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    isTimerRunning = false;
+                    timerDisplay.textContent = '00:00';
+                    alert('⏰ Waktu habis! Silakan kumpulkan.');
+                    // otomatis submit? atau biarkan user klik submit dengan centang
+                    // kita enable submit jika centang dicentang, tapi tidak otomatis.
+                    // Tapi akan kita disable submit? kita biarkan saja.
+                    return;
+                }
+                waktuDetik--;
+                const menit = Math.floor(waktuDetik / 60);
+                const detik = waktuDetik % 60;
+                timerDisplay.textContent = `${String(menit).padStart(2, '0')}:${String(detik).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function resetTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            waktuDetik = 5400;
+            timerDisplay.textContent = '90:00';
+            isTimerRunning = false;
+            // start ulang
+            startTimer();
+        }
+
+        // ---------- SUBMIT ----------
+        function handleSubmit() {
+            if (isSubmitted) {
+                alert('Sudah dikumpulkan.');
+                return;
+            }
+
+            // validasi identitas
+            const nama = namaInput.value.trim();
+            if (nama === '') {
+                infoAlert.style.display = 'block';
+                infoAlert.textContent = '⚠️ Harap isi nama siswa.';
+                return;
+            }
+
+            // cek centang
+            if (!centangSelesai.checked) {
+                infoAlert.style.display = 'block';
+                infoAlert.textContent = '⚠️ Centang "Saya sudah selesai mengerjakan" terlebih dahulu.';
+                return;
+            }
+
+            // kumpulkan jawaban
+            const jawabanUser = [];
+            const soalItems = document.querySelectorAll('.soal-item');
+            let semuaTerisi = true;
+
+            soalItems.forEach((item, idx) => {
+                const soal = daftarSoal[idx];
+                if (soal.tipe === 'pilihan') {
+                    const selected = item.querySelector(`input[name="soal_${idx}"]:checked`);
+                    if (selected) {
+                        jawabanUser.push({ nomor: idx+1, tipe: 'pilihan', jawaban: selected.value });
+                    } else {
+                        jawabanUser.push({ nomor: idx+1, tipe: 'pilihan', jawaban: '(tidak diisi)' });
+                        semuaTerisi = false;
+                    }
+                } else {
+                    const input = item.querySelector('.input-singkat');
+                    if (input) {
+                        const val = input.value.trim();
+                        if (val === '') {
+                            jawabanUser.push({ nomor: idx+1, tipe: 'singkat', jawaban: '(tidak diisi)' });
+                            semuaTerisi = false;
+                        } else {
+                            jawabanUser.push({ nomor: idx+1, tipe: 'singkat', jawaban: val });
+                        }
+                    }
+                }
+            });
+
+            // Hitung skor (opsional)
+            let benar = 0;
+            jawabanUser.forEach((jaw, index) => {
+                const soal = daftarSoal[index];
+                if (jaw.jawaban === soal.jawabanBenar) benar++;
+            });
+
+            // Tampilkan hasil (alert)
+            const kelas = kelasSelect.value;
+            const total = daftarSoal.length;
+            let pesan = `📊 Hasil Ujian\nNama: ${nama}\nKelas: ${kelas}\nJawaban benar: ${benar} dari ${total}`;
+            if (!semuaTerisi) pesan += '\n⚠️ Ada jawaban kosong.';
+            alert(pesan);
+
+            // Nonaktifkan submit & timer
+            isSubmitted = true;
+            submitBtn.disabled = true;
+            centangSelesai.disabled = true;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                isTimerRunning = false;
+            }
+            infoAlert.style.display = 'block';
+            infoAlert.textContent = '✅ Ujian selesai. Jawaban telah dikumpulkan.';
+            // disable semua input
+            document.querySelectorAll('input, select, button').forEach(el => {
+                if (el !== acakUlangBtn) el.disabled = true;
+            });
+            acakUlangBtn.disabled = true; // tidak bisa acak lagi
+        }
+
+        // ---------- EVENT LISTENER ----------
+        // centang selesai -> enable submit
+        centangSelesai.addEventListener('change', function() {
+            if (this.checked && !isSubmitted) {
+                submitBtn.disabled = false;
+                infoAlert.style.display = 'none';
+            } else {
+                submitBtn.disabled = true;
+            }
+        });
+
+        submitBtn.addEventListener('click', handleSubmit);
+
+        acakUlangBtn.addEventListener('click', function() {
+            if (isSubmitted) {
+                alert('Ujian sudah dikumpulkan. Refresh halaman untuk memulai ulang.');
+                return;
+            }
+            // reset timer?
+            // konfirmasi
+            if (confirm('Acak ulang soal akan mereset timer ke 10 menit. Lanjutkan?')) {
+                resetTimer();
+                loadAcakDanRender();
+                // reset centang
+                centangSelesai.checked = false;
+                submitBtn.disabled = true;
+                infoAlert.style.display = 'none';
+                // enable semua (jika ada yang disable)
+                document.querySelectorAll('input, select, button').forEach(el => el.disabled = false);
+                centangSelesai.disabled = false;
+                isSubmitted = false;
+            }
+        });
+
+        // Inisialisasi: acak otomatis saat load
+        window.addEventListener('load', function() {
+            // reset state
+            isSubmitted = false;
+            centangSelesai.disabled = false;
+            submitBtn.disabled = true;
+            // load soal acak
+            daftarSoal = generateRandomSoal();
+            renderSoal(daftarSoal);
+            // timer
+            resetTimer(); // start 10 menit
+            // event untuk input nama/kelas tidak perlu
+            infoAlert.style.display = 'none';
+        });
+
+        // Jika user memuat ulang halaman, semua state reset.
+        // tambahan: jika timer habis, kita tidak matikan fungsi, hanya alert.
+        // Biarkan user bisa submit jika centang dicentang.
+        // Namun jika waktu habis, timerDisplay 00:00, dan tombol submit tetap bisa diklik jika centang.
+        // kita tambahkan cek di handleSubmit jika waktu habis? opsional.
+
+    })();
+</script>
+</body>
+</html>
